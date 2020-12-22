@@ -24,16 +24,14 @@ class BooksApp extends React.Component {
     searchBooks: [],
     books: [],
     shelves: [
-      new Shelf('Current Reading', 'currentlyReading'),
+      new Shelf('Currently Reading', 'currentlyReading'),
       new Shelf('Want To Read', 'wantToRead'),
       new Shelf('Read', 'read')
     ]
   }
-  componentDidMount() {
-    BooksAPI.getAll().then((books) => {
-      console.log(books)
-      this.setState({books})
-    })
+  async componentDidMount() {
+    const books = await BooksAPI.getAll()
+    this.setState({books})
   }
 
   onUpdateBook = (book, shelf) => {
@@ -46,8 +44,6 @@ class BooksApp extends React.Component {
   }
 
   onAddBook = (book, shelf) => {
-    console.log(book)
-    console.log(shelf)
     BooksAPI.update(book, shelf).then((response) => {
       const newBooks = this.state.books
       var bookIndex = newBooks.map(book => book.id).indexOf(book.id)
@@ -65,12 +61,12 @@ class BooksApp extends React.Component {
   render() {
     return (
       <div className="app">
-        <Route exact path='/' render={() => (
+        <Route exact path='/'>
           <ListPage books={this.state.books} shelves={this.state.shelves} onUpdateBook={this.onUpdateBook} />
-        )} />
-        <Route path='/search' render={() => (
+        </Route>
+        <Route path='/search'>
           <SearchPage books={this.state.books} shelves={this.state.shelves} onAddBook={this.onAddBook} />
-        )} />
+        </Route>
       </div>
     )
   }

@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
 import * as BooksAPI from '../BooksAPI'
@@ -28,8 +29,8 @@ export default class SearchPage extends React.Component {
     return (
       <div className="search-books">
         <div className="search-books-bar">
-          <Link to='/'>
-            <button className="close-search">Close</button>
+          <Link className="close-search" to='/'>
+            Close
           </Link>
           <div className="search-books-input-wrapper">
             <input onChange={this.onSearch} type="text" placeholder="Search by title or author"/>
@@ -38,9 +39,9 @@ export default class SearchPage extends React.Component {
         <div className="search-books-results">
           <ol className="books-grid">
             {this.state.searchBooks.map((book) => {
-              const bookIndex = books.map(book => book.id).indexOf(book.id)
-              if (bookIndex !== -1) {
-                book.shelf = books[bookIndex].shelf
+              const bookOnShelf = books.find(({ id }) => id === book.id)
+              if (bookOnShelf) {
+                book.shelf = bookOnShelf.shelf
               }
               return <Book key={book.id} shelves={shelves} book={book} onMoveBook={onAddBook} />
             })}
@@ -49,4 +50,10 @@ export default class SearchPage extends React.Component {
       </div>
     )
   }
+}
+
+SearchPage.propTypes = {
+  shelves: PropTypes.arrayOf(PropTypes.object).isRequired,
+  books: PropTypes.arrayOf(PropTypes.object).isRequired,
+  onAddBook: PropTypes.func.isRequired,
 }
